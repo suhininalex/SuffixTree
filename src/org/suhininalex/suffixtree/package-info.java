@@ -1,0 +1,4 @@
+@ParametersAreNonnullByDefault
+package org.suhininalex.suffixtree;
+
+import javax.annotation.ParametersAreNonnullByDefault;

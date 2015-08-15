@@ -1,0 +1,61 @@
+package org.suhininalex.suffixtree;
+
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
+
+public class Node {
+    private static final AtomicLong nextId = new AtomicLong(1);
+
+    private long id = nextId.addAndGet(1);
+
+    private Map<Token, Edge> edges = new HashMap<>();
+    Edge parentEdge;
+    Node suffixLink;
+
+    public Node(Edge parentEdge) {
+        this.parentEdge = parentEdge;
+    }
+
+    void putEdge(Node terminal, List<Token> sequence, int k, int p){
+        Edge edge = new Edge(this, terminal, sequence, k, p);
+        edges.put(edge.getFirstToken(), edge);
+    }
+
+    void putEdge(List<Token> sequence, int k){
+        Edge edge = new Edge(this, null, sequence, k, sequence.size()-1);
+        edges.put(edge.getFirstToken(), edge);
+    }
+
+    Collection<Edge> getEdges(){
+        return edges.values();
+    }
+
+    @Nullable Edge getEdge(Token token) {
+        return edges.get(token);
+    }
+
+    void removeEdge(Edge edge){
+        edges.remove(edge.getFirstToken());
+    }
+
+    @Override
+    public String toString() {
+        return "Node("+id+")";
+    }
+
+    public String getSubTree(){
+        StringBuilder out = new StringBuilder();
+        this.printToStringBuilder(out, "");
+        return out.toString();
+    }
+
+    private void printToStringBuilder(StringBuilder out, String prefix){
+        out.append(prefix).append(this).append("\n");
+        for (Edge edge : getEdges()){
+            out.append(prefix).append(edge).append("\n");
+            if (edge.terminal!=null) edge.terminal.printToStringBuilder(out, prefix + "    ");
+        }
+    }
+
+}
