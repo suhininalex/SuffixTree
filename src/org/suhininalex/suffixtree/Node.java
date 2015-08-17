@@ -6,8 +6,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class Node {
     private static final AtomicLong nextId = new AtomicLong(1);
-
-    private long id = nextId.addAndGet(1);
+    private long id = nextId.incrementAndGet();
 
     private Map<Object, Edge> edges = new HashMap<>();
     Edge parentEdge;
@@ -44,7 +43,7 @@ public class Node {
         return "Node("+id+")";
     }
 
-    public String getSubTree(){
+    public String subTreeToString(){
         StringBuilder out = new StringBuilder();
         this.printToStringBuilder(out, "");
         return out.toString();

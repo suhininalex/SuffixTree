@@ -33,10 +33,25 @@ public class SuffixTreeRemovingTest {
 //    }
 
     @Test
-    public void testSimpleRemoveSequence() throws Exception {
+    public void testSimpleRemoveSequence() {
         System.out.println("Test simple remove sequence");
+        Long id1 = tree.addSequence(sequence1);
+        Long id2 = tree.addSequence(sequence2);
+
         System.out.println(tree);
-        tree.removeSequenceFromBranch(tree.root,sequence1, 0);
+        tree.removeSequence(id2);
+        System.out.println(tree);
+    }
+
+    @Test
+    public void testComplexRemoveSequence() {
+        System.out.println("Test complex remove sequence");
+        tree.addSequence(sequence1);
+        System.out.println(tree);
+        for (int i=0;i<1000; i++){
+            long id = tree.addSequence(sequence2);
+            tree.removeSequence(id);
+        }
         System.out.println(tree);
     }
 
@@ -52,8 +67,7 @@ public class SuffixTreeRemovingTest {
             sequence2.add(elem);
         }
 
-        tree.addSequence(sequence1);
-        tree.addSequence(sequence2);
+
         System.out.println("-------------------------");
     }
 }
