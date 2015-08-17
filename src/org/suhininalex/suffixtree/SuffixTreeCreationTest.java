@@ -10,8 +10,8 @@ import static org.junit.Assert.*;
 
 public class SuffixTreeCreationTest {
     SuffixTree tree = new SuffixTree();;
-    List<Token> sequence = new ArrayList<>();
-    List<Token> sequence2 = new ArrayList<>();
+    List sequence = new ArrayList<>();
+    List sequence2 = new ArrayList<>();
 
     @Test
     public void testUpdate() {
@@ -39,12 +39,12 @@ public class SuffixTreeCreationTest {
     public void setUp(){
         char [] string = {'c','a','c','a','o'};
         for (char elem : string){
-            sequence.add(new Token<>(elem));
+            sequence.add(elem);
         }
 
         char [] string2 = {'c','a','c','a','o','a'};
         for (char elem : string2){
-            sequence2.add(new Token<>(elem));
+            sequence2.add(elem);
         }
         System.out.println("-------------------------");
     }

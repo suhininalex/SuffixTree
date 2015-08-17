@@ -1,14 +1,13 @@
 package org.suhininalex.suffixtree;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class SuffixTree {
-    final private List<List<Token>> sequences = new ArrayList<>();
+    final private List<List> sequences = new ArrayList<>();
     final Node root = new Node(null);
 
-    Tuple<Boolean, Node> testAndSplit(Node s, List<Token> sequence, int k, int p, Token t){
+    Tuple<Boolean, Node> testAndSplit(Node s, List sequence, int k, int p, Object t){
         if (k<=p) {
             Edge ga = s.getEdge(sequence.get(k));
             if (t.equals(ga.sequence.get(ga.k+p-k+1))) return new Tuple<>(true, s);
@@ -31,7 +30,7 @@ public class SuffixTree {
         }
     }
 
-    Tuple<Node, Integer> canonize(Node s, List<Token> sequence, int k, int p){
+    Tuple<Node, Integer> canonize(Node s, List sequence, int k, int p){
         if (s==null) { s = root; k=k+1; }
         if (p<k) return new Tuple<>(s,k);
         else {
@@ -45,7 +44,7 @@ public class SuffixTree {
         }
     }
 
-    Tuple<Node, Integer> update(Node s, List<Token> sequence, int k, int i){
+    Tuple<Node, Integer> update(Node s, List sequence, int k, int i){
         Node oldr = root;   Tuple<Boolean, Node> splitRes = testAndSplit(s, sequence, k, i-1, sequence.get(i));
         boolean endPoint = splitRes.first;  Node r = splitRes.second;
         while (!endPoint){
@@ -63,7 +62,7 @@ public class SuffixTree {
 
     //TODO проблема с id последовательностей
     //при изменении порядка id может меняется
-    void addSequence(List<Token> sequence){
+    void addSequence(List sequence){
         sequences.add(sequence);
         int idSequence = sequences.size()-1;
         sequence.add(new EndToken(idSequence));
@@ -84,7 +83,7 @@ public class SuffixTree {
 //    }
 
     //Only for existing sequences
-    void removeSequenceFromEdge(Edge edge, List<Token> sequence){
+    void removeSequenceFromEdge(Edge edge, List sequence){
         if (edge.sequence!=sequence) return;
 
         //removing leaf
@@ -109,8 +108,7 @@ public class SuffixTree {
         }
     }
 
-    //TODO canonize после следования по суффиксной ссылке
-    void removeSequenceFromBranch(Node s, List<Token> sequence, int k){
+    void removeSequenceFromBranch(Node s, List sequence, int k){
         System.out.println("----------------");
         System.out.println("Begin: "+s+" k "+k);
         Tuple<Node,Integer> canonized = canonize(s, sequence, k, sequence.size() - 2);

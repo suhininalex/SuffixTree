@@ -7,11 +7,11 @@ public class Edge {
     Node parent;
     Node terminal;
 
-    List<Token> sequence;
+    List sequence;
     int k;
     int p;
 
-    protected Edge(Node parent, Node terminal, List<Token> sequence, int k, int p) {
+    protected Edge(Node parent, Node terminal, List sequence, int k, int p) {
         this.parent = parent;
         this.terminal = terminal;
         this.sequence = sequence;
@@ -25,7 +25,7 @@ public class Edge {
 //        return sequence.subList(k, p+1).toString()+"  |  "+sequence.hashCode();
     }
 
-    Token getFirstToken(){
+    Object getFirstToken(){
         return sequence.get(k);
     }
 }

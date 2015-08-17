@@ -9,7 +9,7 @@ public class Node {
 
     private long id = nextId.addAndGet(1);
 
-    private Map<Token, Edge> edges = new HashMap<>();
+    private Map<Object, Edge> edges = new HashMap<>();
     Edge parentEdge;
     Node suffixLink;
 
@@ -17,12 +17,12 @@ public class Node {
         this.parentEdge = parentEdge;
     }
 
-    void putEdge(Node terminal, List<Token> sequence, int k, int p){
+    void putEdge(Node terminal, List sequence, int k, int p){
         Edge edge = new Edge(this, terminal, sequence, k, p);
         edges.put(edge.getFirstToken(), edge);
     }
 
-    void putEdge(List<Token> sequence, int k){
+    void putEdge(List sequence, int k){
         Edge edge = new Edge(this, null, sequence, k, sequence.size()-1);
         edges.put(edge.getFirstToken(), edge);
     }
@@ -31,7 +31,7 @@ public class Node {
         return edges.values();
     }
 
-    @Nullable Edge getEdge(Token token) {
+    @Nullable Edge getEdge(Object token) {
         return edges.get(token);
     }
 

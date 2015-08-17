@@ -9,8 +9,8 @@ import java.util.List;
 public class SuffixTreeRemovingTest {
 
     SuffixTree tree = new SuffixTree();;
-    List<Token> sequence1 = new ArrayList<>();
-    List<Token> sequence2 = new ArrayList<>();
+    List sequence1 = new ArrayList<>();
+    List sequence2 = new ArrayList<>();
 
 //    @Test
 //    public void testGetEdgeForSequence() throws Exception {
@@ -44,12 +44,12 @@ public class SuffixTreeRemovingTest {
     public void setUp(){
         char [] string = {'c','a','c','a','o'};
         for (char elem : string){
-            sequence1.add(new Token<>(elem));
+            sequence1.add(elem);
         }
 
         char [] string2 = {'c','a','c','a','o','a'};
         for (char elem : string2){
-            sequence2.add(new Token<>(elem));
+            sequence2.add(elem);
         }
 
         tree.addSequence(sequence1);

@@ -1,10 +1,9 @@
 package org.suhininalex.suffixtree;
 
-public class EndToken extends Token {
+public class EndToken {
     Integer idSequence;
 
     public EndToken(int idSequence) {
-        super(null);
         this.idSequence = idSequence;
     }
 
