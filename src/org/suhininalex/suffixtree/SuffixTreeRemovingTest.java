@@ -12,26 +12,6 @@ public class SuffixTreeRemovingTest {
     List sequence1 = new ArrayList<>();
     List sequence2 = new ArrayList<>();
 
-//    @Test
-//    public void testGetEdgeForSequence() throws Exception {
-//        System.out.println("Test find last edge for existing sequence");
-//        System.out.println(tree);
-//
-//        System.out.println("Searching for "+sequence1);
-//        Edge finalEdge = tree.getEdgeForSequence(sequence1);
-//        System.out.println(finalEdge.parent);
-//        System.out.println(finalEdge);
-//    }
-
-//    @Test
-//    public void testSimpleLeafRemove() throws Exception {
-//        System.out.println("Test simple leaf removing");
-//        System.out.println(tree);
-//        Edge finalEdge = tree.getEdgeForSequence(sequence1);
-//        tree.removeSequenceFromEdge(finalEdge, sequence1);
-//        System.out.println(tree);
-//    }
-
     @Test
     public void testSimpleRemoveSequence() {
         System.out.println("Test simple remove sequence");
@@ -43,17 +23,21 @@ public class SuffixTreeRemovingTest {
         System.out.println(tree);
     }
 
-    @Test
-    public void testComplexRemoveSequence() {
-        System.out.println("Test complex remove sequence");
-        tree.addSequence(sequence1);
-        System.out.println(tree);
-        for (int i=0;i<1000; i++){
-            long id = tree.addSequence(sequence2);
-            tree.removeSequence(id);
-        }
-        System.out.println(tree);
-    }
+//    @Test
+    /*
+        Test with visualvm
+        (OK)
+    */
+//    public void testMemoryLeakWhenRemoveSequence() {
+//        System.out.println("Test complex remove sequence");
+//        tree.addSequence(sequence1);
+//        System.out.println(tree);
+//        for (int i=0;i<1000000000; i++){
+//            long id = tree.addSequence(sequence2);
+//            tree.removeSequence(id);
+//        }
+//        System.out.println(tree);
+//    }
 
     @Before
     public void setUp(){

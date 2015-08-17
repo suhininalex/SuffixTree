@@ -5,8 +5,15 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class SuffixTree<Token> {
 
-    final private Map<Long,List> sequences = new HashMap<>();
     final Node root = new Node(null);
+
+    final private Map<Long,List> sequences = new HashMap<>();
+
+    //TODO improve sequence id distribution
+    private final AtomicLong sequenceFreeId = new AtomicLong(1);
+    private long getNextFreeSequenceId(){
+        return sequenceFreeId.incrementAndGet();
+    }
 
     protected Tuple<Boolean, Node> testAndSplit(Node s, List sequence, int k, int p, Object t){
         if (k<=p) {
@@ -61,6 +68,17 @@ public class SuffixTree<Token> {
         return new Tuple<>(s, k);
     }
 
+    protected void updateSequence(List sequence){
+        Node s = root; int k = 0; int i = -1;
+        while (i+1<sequence.size()){
+            i=i+1;
+            Tuple<Node, Integer> updateRes = update(s, sequence, k, i);
+            s = updateRes.first;   k = updateRes.second;
+            Tuple<Node, Integer> canonizeRes = canonize(s, sequence, k, i);
+            s = canonizeRes.first; k = canonizeRes.second;
+        }
+    }
+
     protected void removeSequenceFromEdge(Edge edge, List sequence){
         if (edge.sequence!=sequence) return;
 
@@ -101,7 +119,12 @@ public class SuffixTree<Token> {
         }
     }
 
-    protected long addSequence(List sequence){
+//    public boolean checkSequence(final List sequence){
+//        Node check
+//    }
+
+    @SuppressWarnings("unchecked")
+    public long addSequence(final List sequence){
         List tokens = new ArrayList();
         tokens.addAll(sequence);
         long idSequence = getNextFreeSequenceId();
@@ -111,17 +134,6 @@ public class SuffixTree<Token> {
         return idSequence;
     }
 
-    public void updateSequence(List sequence){
-        Node s = root; int k = 0; int i = -1;
-        while (i+1<sequence.size()){
-            i=i+1;
-            Tuple<Node, Integer> updateRes = update(s, sequence, k, i);
-            s = updateRes.first;   k = updateRes.second;
-            Tuple<Node, Integer> canonizeRes = canonize(s, sequence, k, i);
-            s = canonizeRes.first; k = canonizeRes.second;
-        }
-    }
-
     public void removeSequence(long id){
         List sequence = sequences.get(id);
         if (sequence == null) throw new IllegalStateException("There are no such sequence!");
@@ -129,18 +141,15 @@ public class SuffixTree<Token> {
         sequences.remove(id);
     }
 
+    @SuppressWarnings("unchecked")
     public List<Token> getSequence(long id){
-        return sequences.get(id);
+        List<Token> sequence = sequences.get(id);
+        if (sequence==null) throw new IllegalStateException("No such sequence!");
+        return Collections.unmodifiableList(sequence.subList(0, sequence.size()-1));
     }
 
     @Override
     public String toString() {
         return root.subTreeToString();
-    }
-
-    //TODO improve sequence id distribution
-    private final AtomicLong sequenceFreeId = new AtomicLong(1);
-    private long getNextFreeSequenceId(){
-        return new Long(sequenceFreeId.incrementAndGet());
     }
 }

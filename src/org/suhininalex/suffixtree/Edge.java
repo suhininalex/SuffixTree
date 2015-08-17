@@ -21,8 +21,7 @@ public class Edge {
 
     @Override
     public String toString() {
-        return sequence.subList(k, p+1).toString() + "  " +  k + " " + p + " |" + sequence.hashCode();
-//        return sequence.subList(k, p+1).toString()+"  |  "+sequence.hashCode();
+        return sequence.subList(k, p+1).toString();
     }
 
     Object getFirstToken(){
