@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SuffixTreeCreationTest {
-    SuffixTree tree = new SuffixTree();;
+    SuffixTree tree = new SuffixTree();
     List sequence = new ArrayList<>();
     List sequence2 = new ArrayList<>();
 

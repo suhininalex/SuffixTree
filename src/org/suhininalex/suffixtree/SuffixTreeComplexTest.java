@@ -1,20 +1,17 @@
 package org.suhininalex.suffixtree;
 
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import junit.framework.TestCase;
 import org.junit.Test;
-
-import javax.sound.midi.Sequence;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SuffixTreeComplexTest extends TestCase {
     int sequencesAmount = 100;
     int sequencesLength = 1000;
-    int sequencesRemovals = 99;
+    int sequencesRemovals = 50;
 
     @Test
-    public void testSimpleRemoveSequence() {
+    public void testComplexRemoveSequence() {
         System.out.println("Complex tree testing");
         SuffixTree tree = new SuffixTree();
         List<List<Character>> sequences = generateRandomLists(sequencesAmount, sequencesLength);
@@ -40,25 +37,27 @@ public class SuffixTreeComplexTest extends TestCase {
 
         //Получение внутренних ссылок на удаленные последовательности
         for (long id : removedId) {
-            removedSequences.add((List)tree.sequences.get(id));
+            removedSequences.add((List) tree.sequences.get(id));
         }
 
-//        System.out.println(tree);
 
-        //Удаление
+        System.out.print("Removing...");
         for (Long id : removedId){
-            tree.removeSequence2(id);
+            tree.removeSequence(id);
         }
+        System.out.println("OK");
 
-//        System.out.println(tree);
 
-        //Проверка оставшихся
-//        checkSequences(tree, sequences);
+        System.out.print("Check other existance...");
+        checkSequences(tree, sequences);
+        System.out.println("OK");
 
-        //Проверка удаления
+
+        System.out.print("Check relabelling and edges removal...");
         for (List sequence : removedSequences){
             assertEquals(true, checkNoSequence(tree.root, sequence));
         }
+        System.out.println("OK");
 
     }
 
@@ -104,7 +103,7 @@ public class SuffixTreeComplexTest extends TestCase {
     }
 
     private static char randChar () {
-        int rnd = (int) (Math.random() * 2); // or use Random or whatever
+        int rnd = (int) (Math.random() * 26); // or use Random or whatever
         char base = 'a';
         return (char) (base + rnd);
     }

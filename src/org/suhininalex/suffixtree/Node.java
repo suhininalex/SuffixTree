@@ -58,8 +58,4 @@ public class Node {
             if (edge.terminal!=null) edge.terminal.printToStringBuilder(out, prefix + "    ");
         }
     }
-
-    protected void clear(){
-        edges.clear();
-    }
 }

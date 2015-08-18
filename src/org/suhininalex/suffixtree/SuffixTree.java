@@ -79,47 +79,8 @@ public class SuffixTree<Token> {
         }
     }
 
-    /**
-     *
-     * @return edge parent if there was no uniting else another child parent
-     */
-    protected Node removeSequenceFromEdge(Edge edge, List sequence){
-
-        System.out.println("removing edge: "+edge+" from "+edge.parent);
-        System.out.println(this);
-        if (edge.sequence!=sequence) return null;
-
-        //removing leaf
-        Node node = edge.parent;
-        if (edge.terminal==null){
-            node.removeEdge(edge);
-        }
-
-        Edge parentEdge = node.parentEdge;
-        if (parentEdge!=null) {
-            //relabelling parent
-            Edge anotherChild = node.getEdges().iterator().next();
-            parentEdge.sequence = anotherChild.sequence;
-            parentEdge.k = anotherChild.k-parentEdge.p+parentEdge.k-1;
-            parentEdge.p = anotherChild.k-1;
-
-            //uniting
-            if (node.getEdges().size()==1){
-                System.out.println("removing node "+anotherChild.parent);
-
-                parentEdge.terminal = anotherChild.terminal;
-                if (parentEdge.terminal != null) parentEdge.terminal.parentEdge = parentEdge;
-
-                parentEdge.p = parentEdge.p + anotherChild.p - anotherChild.k + 1;
-                anotherChild.parent.clear();
-            }
-        }
-        return null;
-    }
-
     protected void relabelAllParents(Edge edge){
         while (edge!=null && edge.parent!=root) {
-//            System.out.println("relabeling parent of " + edge.parent + "edge " + edge);
             Edge parentEdge = edge.parent.parentEdge;
             if (parentEdge.sequence == edge.sequence) return;
             parentEdge.sequence = edge.sequence;
@@ -129,29 +90,21 @@ public class SuffixTree<Token> {
         }
     }
 
-    protected void removeSequence2(long id){
+    protected void removeSequence(long id){
         List sequence = sequences.get(id);
 
         Tuple<Node, Integer> currentPoint = new Tuple<>(root, 0);
         do {
             Tuple<Node, Integer> canonized = canonize(currentPoint.first, sequence, currentPoint.second, sequence.size() - 2);
-//            System.out.println("canonized: " + canonized.first + " " + canonized.second);
             currentPoint = removeEdge(sequence, canonized.first, canonized.second);
-//            System.out.println("newpoint: "+currentPoint.first + " " + currentPoint.second);
-//            System.out.println(this);
             Collection<Edge> edges = currentPoint.first.getEdges();
             if (!edges.isEmpty()) relabelAllParents(edges.iterator().next());
-//            System.out.println("current edge: "+currentEdge);
-
-
             currentPoint = new Tuple<>(currentPoint.first.suffixLink, currentPoint.second);
         } while (currentPoint.second<sequence.size()-1 || currentPoint.first!=null);
     }
 
     protected Tuple<Node, Integer> removeEdge(List sequence, Node s, int k){
         Edge edge = s.getEdge(sequence.get(k));
-//        System.out.println("removing edge: "+edge + " from " + edge.parent);
-
         s.removeEdge(edge);
 
         if (s!=root && s.getEdges().size()==1){
@@ -166,28 +119,6 @@ public class SuffixTree<Token> {
             return new Tuple<>(parentEdge.parent, k-parentEdgeLength);
         }
         return new Tuple<>(s, k);
-    }
-
-    protected void removeSequenceFromBranch(Node s, List sequence, int k){
-//        System.out.println("removing from branch: "+s+" k="+k);
-
-        Tuple<Node,Integer> canonized = canonize(s, sequence, k, sequence.size() - 2);
-
-        Node node = canonized.first;
-//        System.out.println("canonized: " + canonized.first + "k "+canonized.second);
-
-        Edge edge = node.getEdge(sequence.get(canonized.second));
-//        System.out.println("removing chain: " + node + " " + edge);
-        while (edge!=null) {
-            removeSequenceFromEdge(edge, sequence);
-            edge = edge.parent.parentEdge;
-        }
-
-//        if (canonized.second<sequence.size()-1 || s.suffixLink!=null)
-//            removeSequenceFromBranch(node.suffixLink, sequence, canonized.second);
-
-
-
     }
 
     public boolean checkSequence(final List sequence){
@@ -216,13 +147,6 @@ public class SuffixTree<Token> {
         tokens.add(new EndToken(idSequence));
         updateSequence(tokens);
         return idSequence;
-    }
-
-    public void removeSequence(long id){
-        List sequence = sequences.get(id);
-        if (sequence == null) throw new IllegalStateException("There are no such sequence!");
-        removeSequenceFromBranch(root, sequence, 0);
-        sequences.remove(id);
     }
 
     @SuppressWarnings("unchecked")
