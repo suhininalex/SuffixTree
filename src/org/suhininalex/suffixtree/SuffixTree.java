@@ -7,7 +7,7 @@ public class SuffixTree<Token> {
 
     final Node root = new Node(null);
 
-    final private Map<Long,List> sequences = new HashMap<>();
+    final protected Map<Long,List> sequences = new HashMap<>();
 
     //TODO improve sequence id distribution
     private final AtomicLong sequenceFreeId = new AtomicLong(1);
@@ -21,15 +21,15 @@ public class SuffixTree<Token> {
             if (t.equals(ga.sequence.get(ga.k+p-k+1))) return new Tuple<>(true, s);
             else {
                 Node r = new Node(ga);
-                r.putEdge(
+                Edge newEdge = r.putEdge(
                         ga.terminal,
                         ga.sequence,
                         ga.k + p - k + 1,
                         ga.p
                 );
+                if (ga.terminal!=null) ga.terminal.parentEdge = newEdge;
                 ga.terminal = r;
                 ga.p = ga.k + p - k;
-
                 return new Tuple<>(false, r);
             }
         } else {
@@ -79,8 +79,15 @@ public class SuffixTree<Token> {
         }
     }
 
-    protected void removeSequenceFromEdge(Edge edge, List sequence){
-        if (edge.sequence!=sequence) return;
+    /**
+     *
+     * @return edge parent if there was no uniting else another child parent
+     */
+    protected Node removeSequenceFromEdge(Edge edge, List sequence){
+
+        System.out.println("removing edge: "+edge+" from "+edge.parent);
+        System.out.println(this);
+        if (edge.sequence!=sequence) return null;
 
         //removing leaf
         Node node = edge.parent;
@@ -98,30 +105,107 @@ public class SuffixTree<Token> {
 
             //uniting
             if (node.getEdges().size()==1){
+                System.out.println("removing node "+anotherChild.parent);
+
                 parentEdge.terminal = anotherChild.terminal;
+                if (parentEdge.terminal != null) parentEdge.terminal.parentEdge = parentEdge;
+
                 parentEdge.p = parentEdge.p + anotherChild.p - anotherChild.k + 1;
+                anotherChild.parent.clear();
             }
         }
+        return null;
+    }
+
+    protected void relabelAllParents(Edge edge){
+        while (edge!=null && edge.parent!=root) {
+//            System.out.println("relabeling parent of " + edge.parent + "edge " + edge);
+            Edge parentEdge = edge.parent.parentEdge;
+            if (parentEdge.sequence == edge.sequence) return;
+            parentEdge.sequence = edge.sequence;
+            parentEdge.k = edge.k - (parentEdge.p - parentEdge.k) - 1;
+            parentEdge.p = edge.k - 1;
+            edge = parentEdge;
+        }
+    }
+
+    protected void removeSequence2(long id){
+        List sequence = sequences.get(id);
+
+        Tuple<Node, Integer> currentPoint = new Tuple<>(root, 0);
+        do {
+            Tuple<Node, Integer> canonized = canonize(currentPoint.first, sequence, currentPoint.second, sequence.size() - 2);
+//            System.out.println("canonized: " + canonized.first + " " + canonized.second);
+            currentPoint = removeEdge(sequence, canonized.first, canonized.second);
+//            System.out.println("newpoint: "+currentPoint.first + " " + currentPoint.second);
+//            System.out.println(this);
+            Collection<Edge> edges = currentPoint.first.getEdges();
+            if (!edges.isEmpty()) relabelAllParents(edges.iterator().next());
+//            System.out.println("current edge: "+currentEdge);
+
+
+            currentPoint = new Tuple<>(currentPoint.first.suffixLink, currentPoint.second);
+        } while (currentPoint.second<sequence.size()-1 || currentPoint.first!=null);
+    }
+
+    protected Tuple<Node, Integer> removeEdge(List sequence, Node s, int k){
+        Edge edge = s.getEdge(sequence.get(k));
+//        System.out.println("removing edge: "+edge + " from " + edge.parent);
+
+        s.removeEdge(edge);
+
+        if (s!=root && s.getEdges().size()==1){
+            Edge anotherChild = s.getEdges().iterator().next();
+            Edge parentEdge = s.parentEdge;
+            parentEdge.terminal = anotherChild.terminal;
+            if (anotherChild.terminal != null) anotherChild.terminal.parentEdge = parentEdge;
+            int parentEdgeLength = parentEdge.p - parentEdge.k + 1;
+            parentEdge.k = anotherChild.k - parentEdgeLength;
+            parentEdge.p = anotherChild.p;
+            parentEdge.sequence = anotherChild.sequence;
+            return new Tuple<>(parentEdge.parent, k-parentEdgeLength);
+        }
+        return new Tuple<>(s, k);
     }
 
     protected void removeSequenceFromBranch(Node s, List sequence, int k){
+//        System.out.println("removing from branch: "+s+" k="+k);
+
         Tuple<Node,Integer> canonized = canonize(s, sequence, k, sequence.size() - 2);
 
         Node node = canonized.first;
-        if (node.suffixLink!=null) {
-            removeSequenceFromBranch(node.suffixLink, sequence, canonized.second);
-        }
+//        System.out.println("canonized: " + canonized.first + "k "+canonized.second);
 
         Edge edge = node.getEdge(sequence.get(canonized.second));
-        while (edge!=null && edge.sequence==sequence) {
+//        System.out.println("removing chain: " + node + " " + edge);
+        while (edge!=null) {
             removeSequenceFromEdge(edge, sequence);
             edge = edge.parent.parentEdge;
         }
+
+//        if (canonized.second<sequence.size()-1 || s.suffixLink!=null)
+//            removeSequenceFromBranch(node.suffixLink, sequence, canonized.second);
+
+
+
     }
 
-//    public boolean checkSequence(final List sequence){
-//        Node check
-//    }
+    public boolean checkSequence(final List sequence){
+        if (sequence==null || sequence.isEmpty()) return true;
+        int k = 0;
+        Node currentNode = root;
+        do {
+            Edge currentEdge = currentNode.getEdge(sequence.get(k));
+            if (currentEdge==null) return false;
+            for (int i = currentEdge.k; i <= currentEdge.p; i++) {
+                if (!sequence.get(k).equals(currentEdge.sequence.get(i))) return false;
+                k++;
+                if (k >= sequence.size()) return true;
+            }
+            currentNode = currentEdge.terminal;
+        } while (currentNode!=null);
+        return false;
+    }
 
     @SuppressWarnings("unchecked")
     public long addSequence(final List sequence){

@@ -16,14 +16,16 @@ public class Node {
         this.parentEdge = parentEdge;
     }
 
-    void putEdge(Node terminal, List sequence, int k, int p){
+    Edge putEdge(Node terminal, List sequence, int k, int p){
         Edge edge = new Edge(this, terminal, sequence, k, p);
         edges.put(edge.getFirstToken(), edge);
+        return edge;
     }
 
-    void putEdge(List sequence, int k){
+    Edge putEdge(List sequence, int k){
         Edge edge = new Edge(this, null, sequence, k, sequence.size()-1);
         edges.put(edge.getFirstToken(), edge);
+        return edge;
     }
 
     Collection<Edge> getEdges(){
@@ -40,7 +42,7 @@ public class Node {
 
     @Override
     public String toString() {
-        return "Node("+id+")";
+        return "Node("+id+") P("+(parentEdge==null ? "null" : parentEdge.parent.id)+")";
     }
 
     public String subTreeToString(){
@@ -57,4 +59,7 @@ public class Node {
         }
     }
 
+    protected void clear(){
+        edges.clear();
+    }
 }

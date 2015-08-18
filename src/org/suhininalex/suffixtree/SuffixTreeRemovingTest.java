@@ -8,16 +8,15 @@ import java.util.List;
 
 public class SuffixTreeRemovingTest {
 
-    SuffixTree tree = new SuffixTree();;
+    SuffixTree tree = new SuffixTree();
     List sequence1 = new ArrayList<>();
     List sequence2 = new ArrayList<>();
 
     @Test
     public void testSimpleRemoveSequence() {
         System.out.println("Test simple remove sequence");
-        Long id1 = tree.addSequence(sequence1);
+        tree.addSequence(sequence1);
         Long id2 = tree.addSequence(sequence2);
-
         System.out.println(tree);
         tree.removeSequence(id2);
         System.out.println(tree);
