@@ -7,15 +7,14 @@ public class SuffixTree<Token> {
 
     final Node root = new Node(null);
 
-    final protected Map<Long,List> sequences = new HashMap<>();
+    final Map<Long,List> sequences = new HashMap<>();
 
-    //TODO improve sequence id distribution
     private final AtomicLong sequenceFreeId = new AtomicLong(1);
     private long getNextFreeSequenceId(){
         return sequenceFreeId.incrementAndGet();
     }
 
-    protected Tuple<Boolean, Node> testAndSplit(Node s, List sequence, int k, int p, Object t){
+    Tuple<Boolean, Node> testAndSplit(Node s, List sequence, int k, int p, Object t){
         if (k<=p) {
             Edge ga = s.getEdge(sequence.get(k));
             if (t.equals(ga.sequence.get(ga.k+p-k+1))) return new Tuple<>(true, s);
@@ -38,7 +37,7 @@ public class SuffixTree<Token> {
         }
     }
 
-    protected Tuple<Node, Integer> canonize(Node s, List sequence, int k, int p){
+    Tuple<Node, Integer> canonize(Node s, List sequence, int k, int p){
         if (s==null) { s = root; k=k+1; } //preroot replace
         if (p<k) return new Tuple<>(s,k);
         else {
@@ -52,7 +51,7 @@ public class SuffixTree<Token> {
         }
     }
 
-    protected Tuple<Node, Integer> update(Node s, List sequence, int k, int i){
+    Tuple<Node, Integer> update(Node s, List sequence, int k, int i){
         Node oldr = root;   Tuple<Boolean, Node> splitRes = testAndSplit(s, sequence, k, i-1, sequence.get(i));
         boolean endPoint = splitRes.first;  Node r = splitRes.second;
         while (!endPoint){
@@ -68,7 +67,7 @@ public class SuffixTree<Token> {
         return new Tuple<>(s, k);
     }
 
-    protected void updateSequence(List sequence){
+    void updateSequence(List sequence){
         Node s = root; int k = 0; int i = -1;
         while (i+1<sequence.size()){
             i=i+1;
@@ -79,7 +78,7 @@ public class SuffixTree<Token> {
         }
     }
 
-    protected void relabelAllParents(Edge edge){
+    void relabelAllParents(Edge edge){
         while (edge!=null && edge.parent!=root) {
             Edge parentEdge = edge.parent.parentEdge;
             if (parentEdge.sequence == edge.sequence) return;
@@ -90,20 +89,20 @@ public class SuffixTree<Token> {
         }
     }
 
-    protected void removeSequence(long id){
+    void removeSequence(long id){
         List sequence = sequences.get(id);
 
         Tuple<Node, Integer> currentPoint = new Tuple<>(root, 0);
         do {
             Tuple<Node, Integer> canonized = canonize(currentPoint.first, sequence, currentPoint.second, sequence.size() - 2);
-            currentPoint = removeEdge(sequence, canonized.first, canonized.second);
+            currentPoint = removeEdge(canonized.first, sequence, canonized.second);
             Collection<Edge> edges = currentPoint.first.getEdges();
             if (!edges.isEmpty()) relabelAllParents(edges.iterator().next());
             currentPoint = new Tuple<>(currentPoint.first.suffixLink, currentPoint.second);
         } while (currentPoint.second<sequence.size()-1 || currentPoint.first!=null);
     }
 
-    protected Tuple<Node, Integer> removeEdge(List sequence, Node s, int k){
+    Tuple<Node, Integer> removeEdge(Node s, List sequence, int k){
         Edge edge = s.getEdge(sequence.get(k));
         s.removeEdge(edge);
 
@@ -139,12 +138,12 @@ public class SuffixTree<Token> {
     }
 
     @SuppressWarnings("unchecked")
-    public long addSequence(final List sequence){
+    public long addSequence(final List<Token> sequence){
         List tokens = new ArrayList();
-        tokens.addAll(sequence);
         long idSequence = getNextFreeSequenceId();
-        sequences.put(idSequence, tokens);
+        tokens.addAll(sequence);
         tokens.add(new EndToken(idSequence));
+        sequences.put(idSequence, tokens);
         updateSequence(tokens);
         return idSequence;
     }
@@ -159,5 +158,9 @@ public class SuffixTree<Token> {
     @Override
     public String toString() {
         return root.subTreeToString();
+    }
+
+    public Node getRoot() {
+        return root;
     }
 }

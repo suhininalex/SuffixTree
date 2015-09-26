@@ -1,7 +1,5 @@
 package org.suhininalex.suffixtree;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 public class Edge {
     Node parent;
@@ -11,7 +9,7 @@ public class Edge {
     int k;
     int p;
 
-    protected Edge(Node parent, Node terminal, List sequence, int k, int p) {
+    Edge(Node parent, Node terminal, List sequence, int k, int p) {
         this.parent = parent;
         this.terminal = terminal;
         this.sequence = sequence;
@@ -26,5 +24,25 @@ public class Edge {
 
     Object getFirstToken(){
         return sequence.get(k);
+    }
+
+    public Node getParent() {
+        return parent;
+    }
+
+    public Node getTerminal() {
+        return terminal;
+    }
+
+    public List getSequence() {
+        return sequence;
+    }
+
+    public int getBegin() {
+        return k;
+    }
+
+    public int getEnd() {
+        return p;
     }
 }

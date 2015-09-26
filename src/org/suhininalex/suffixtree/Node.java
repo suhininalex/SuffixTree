@@ -1,18 +1,21 @@
 package org.suhininalex.suffixtree;
 
-import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Node {
     private static final AtomicLong nextId = new AtomicLong(1);
-    private long id = nextId.incrementAndGet();
+    private final long id = nextId.incrementAndGet();
 
-    private Map<Object, Edge> edges = new HashMap<>();
+    private final Map<Object, Edge> edges = new HashMap<>();
+
     Edge parentEdge;
     Node suffixLink;
 
-    public Node(Edge parentEdge) {
+    Node(Edge parentEdge) {
         this.parentEdge = parentEdge;
     }
 
@@ -28,27 +31,12 @@ public class Node {
         return edge;
     }
 
-    Collection<Edge> getEdges(){
-        return edges.values();
-    }
-
-    @Nullable Edge getEdge(Object token) {
+    Edge getEdge(Object token) {
         return edges.get(token);
     }
 
     void removeEdge(Edge edge){
         edges.remove(edge.getFirstToken());
-    }
-
-    @Override
-    public String toString() {
-        return "Node("+id+") P("+(parentEdge==null ? "null" : parentEdge.parent.id)+")";
-    }
-
-    public String subTreeToString(){
-        StringBuilder out = new StringBuilder();
-        this.printToStringBuilder(out, "");
-        return out.toString();
     }
 
     private void printToStringBuilder(StringBuilder out, String prefix){
@@ -57,5 +45,28 @@ public class Node {
             out.append(prefix).append(edge).append("\n");
             if (edge.terminal!=null) edge.terminal.printToStringBuilder(out, prefix + "    ");
         }
+    }
+
+    public String subTreeToString(){
+        StringBuilder out = new StringBuilder();
+        this.printToStringBuilder(out, "");
+        return out.toString();
+    }
+
+    public Collection<Edge> getEdges(){
+        return edges.values();
+    }
+
+    @Override
+    public String toString() {
+        return "Node("+id+") Parent("+(parentEdge==null ? "null" : parentEdge.parent.id)+")";
+    }
+
+    public Node getSuffixLink() {
+        return suffixLink;
+    }
+
+    public Edge getParentEdge() {
+        return parentEdge;
     }
 }

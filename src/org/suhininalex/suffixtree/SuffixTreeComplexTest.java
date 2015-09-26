@@ -2,6 +2,7 @@ package org.suhininalex.suffixtree;
 
 import junit.framework.TestCase;
 import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 

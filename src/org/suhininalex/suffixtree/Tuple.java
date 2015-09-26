@@ -1,10 +1,10 @@
 package org.suhininalex.suffixtree;
 
-public class Tuple<K,V> {
-    public final K first;
-    public final V second;
+class Tuple<K,V> {
+    final K first;
+    final V second;
 
-    public Tuple(K first, V second) {
+    Tuple(K first, V second) {
         this.first = first;
         this.second = second;
     }
