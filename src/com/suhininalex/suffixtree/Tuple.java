@@ -1,4 +1,4 @@
-package org.suhininalex.suffixtree;
+package com.suhininalex.suffixtree;
 
 class Tuple<K,V> {
     final K first;

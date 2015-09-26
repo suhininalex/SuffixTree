@@ -1,4 +1,4 @@
-package org.suhininalex.suffixtree;
+package com.suhininalex.suffixtree;
 
 import java.util.List;
 public class Edge {

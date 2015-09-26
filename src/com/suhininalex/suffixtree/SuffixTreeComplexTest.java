@@ -1,4 +1,4 @@
-package org.suhininalex.suffixtree;
+package com.suhininalex.suffixtree;
 
 import junit.framework.TestCase;
 import org.junit.Test;

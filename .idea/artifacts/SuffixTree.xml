@@ -2,11 +2,17 @@
   <artifact type="jar" build-on-make="true" name="SuffixTree">
     <output-path>$PROJECT_DIR$/out/artifacts/SuffixTree</output-path>
     <root id="archive" name="SuffixTree.jar">
-      <element id="file-copy" path="$PROJECT_DIR$/out/production/SuffixTree/org/suhininalex/suffixtree/Edge.class" />
-      <element id="file-copy" path="$PROJECT_DIR$/out/production/SuffixTree/org/suhininalex/suffixtree/Node.class" />
-      <element id="file-copy" path="$PROJECT_DIR$/out/production/SuffixTree/org/suhininalex/suffixtree/EndToken.class" />
-      <element id="file-copy" path="$PROJECT_DIR$/out/production/SuffixTree/org/suhininalex/suffixtree/Tuple.class" />
-      <element id="file-copy" path="$PROJECT_DIR$/out/production/SuffixTree/org/suhininalex/suffixtree/SuffixTree.class" />
+      <element id="directory" name="com">
+        <element id="directory" name="suhininalex">
+          <element id="directory" name="suffixtree">
+            <element id="file-copy" path="$PROJECT_DIR$/out/production/SuffixTree/com/suhininalex/suffixtree/Edge.class" />
+            <element id="file-copy" path="$PROJECT_DIR$/out/production/SuffixTree/com/suhininalex/suffixtree/EndToken.class" />
+            <element id="file-copy" path="$PROJECT_DIR$/out/production/SuffixTree/com/suhininalex/suffixtree/Node.class" />
+            <element id="file-copy" path="$PROJECT_DIR$/out/production/SuffixTree/com/suhininalex/suffixtree/SuffixTree.class" />
+            <element id="file-copy" path="$PROJECT_DIR$/out/production/SuffixTree/com/suhininalex/suffixtree/Tuple.class" />
+          </element>
+        </element>
+      </element>
     </root>
   </artifact>
 </component>

@@ -1,4 +1,4 @@
-package org.suhininalex.suffixtree;
+package com.suhininalex.suffixtree;
 
 public class EndToken {
     Long idSequence;
