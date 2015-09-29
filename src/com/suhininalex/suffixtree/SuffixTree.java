@@ -89,7 +89,7 @@ public class SuffixTree<Token> {
         }
     }
 
-    void removeSequence(long id){
+    public void removeSequence(long id){
         List sequence = sequences.get(id);
 
         Tuple<Node, Integer> currentPoint = new Tuple<>(root, 0);
