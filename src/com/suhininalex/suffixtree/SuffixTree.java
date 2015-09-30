@@ -91,7 +91,7 @@ public class SuffixTree<Token> {
 
     public void removeSequence(long id){
         List sequence = sequences.get(id);
-
+        if (sequence==null) throw new IllegalArgumentException("There are no such sequence!");
         Tuple<Node, Integer> currentPoint = new Tuple<>(root, 0);
         do {
             Tuple<Node, Integer> canonized = canonize(currentPoint.first, sequence, currentPoint.second, sequence.size() - 2);
@@ -162,5 +162,17 @@ public class SuffixTree<Token> {
 
     public Node getRoot() {
         return root;
+    }
+
+    //TODO check if this rly need
+    public List<Node> getAllLastSequenceNodes(long id){
+        List sequence = sequences.get(id);
+        if (sequence==null) throw new IllegalArgumentException("There are no such sequence!");
+        List<Node> nodes = new LinkedList<>();
+
+        for (int i=0; i<sequence.size()-1; i++){
+            nodes.add(canonize(root, sequence,i,sequence.size()-2).first);
+        }
+        return nodes;
     }
 }
