@@ -26,7 +26,6 @@ public class SuffixTreeComplexTest extends TestCase {
         checkSequences(tree, sequences);
         System.out.println("OK");
 
-        //—писок дл€ удалени€
         List<Long> removedId = new ArrayList<>();
         List<List> removedSequences = new ArrayList<>();
         for (int i=0; i<sequencesRemovals; i++){
@@ -36,7 +35,6 @@ public class SuffixTreeComplexTest extends TestCase {
             sequences.remove(index);
         }
 
-        //ѕолучение внутренних ссылок на удаленные последовательности
         for (long id : removedId) {
             removedSequences.add((List) tree.sequences.get(id));
         }

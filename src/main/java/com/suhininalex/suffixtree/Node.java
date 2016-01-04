@@ -10,7 +10,7 @@ public class Node {
     private static final AtomicLong nextId = new AtomicLong(1);
     private final long id = nextId.incrementAndGet();
 
-    private final Map<Object, Edge> edges = new HashMap<>();
+    private final Map<Object, Edge> edges = new HashMap();
 
     Edge parentEdge;
     Node suffixLink;
