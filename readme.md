@@ -1,4 +1,3 @@
-# Utils
 Compressed suffix tree realization.
 
 ### Simple way to import library (maven):
