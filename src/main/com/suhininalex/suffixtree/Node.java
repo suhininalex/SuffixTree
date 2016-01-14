@@ -31,7 +31,7 @@ public class Node {
         return edge;
     }
 
-    Edge getEdge(Object token) {
+    public Edge getEdge(Object token) {
         return edges.get(token);
     }
 
